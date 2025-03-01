@@ -2,13 +2,14 @@ package utils
 
 import "testing"
 
+type TestCase struct {
+	name  string
+	input any
+	want  bool
+}
+
 func TestIsNil(tester *testing.T) {
-	// Пример тест-кейсов
-	tests := []struct {
-		name  string
-		input any
-		want  bool
-	}{
+	tests := []TestCase{
 		{"nil value", nil, true},
 		{"nil slice", ([]int)(nil), true},
 		{"non-nil slice", []int{}, false},
