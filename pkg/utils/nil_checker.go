@@ -2,44 +2,45 @@ package utils
 
 import "reflect"
 
-// IsNil checks if the given value is nil.
+// IsNil determines whether the provided value is nil.
 //
-// It handles both typed and untyped nil cases and uses reflection to
-// differentiate between nil values and non-nil values for reference types.
+// This function is capable of handling both untyped nil and typed nil cases.
+// It uses the `reflect` package to differentiate between nil and non-nil
+// reference types.
 //
-// Supported types:
-// - Channels
-// - Functions
-// - Interfaces
-// - Maps
-// - Pointers
-// - Slices
+// Supported types for nil checks include:
+//   - Channels (`chan`)
+//   - Functions (`func`)
+//   - Interfaces (`interface{}`)
+//   - Maps (`map`)
+//   - Pointers (`*Type`)
+//   - Slices (`[]Type`)
 //
-// For non-reference types (e.g., int, float, struct, etc.), this function always
-// returns false because such types cannot be nil in Go.
+// For non-reference types (e.g., int, float, struct), this function always returns `false`
+// because such types cannot be nil in Go.
 //
 // Parameters:
-// - value: The value to check. Can be of any type.
+//   - value: The value to be checked. It can be of any type.
 //
 // Returns:
-// - true if the value is nil (either typed or untyped nil).
-// - false if the value is not nil or belongs to a type that cannot be nil.
+//   - `true`: If the value is nil (typed or untyped).
+//   - `false`: If the value is not nil or belongs to a type that cannot be nil.
 func IsNil(value any) bool {
-	// If the value is completely nil (no dynamic type, no value), return true.
+	// If the value is untyped nil, return true.
 	if value == nil {
 		return true
 	}
 
-	// Obtain the reflection-based representation of the value.
+	// Use reflection to analyze the dynamic type and value.
 	v := reflect.ValueOf(value)
 
-	// Check if the reflected value is valid. Invalid values cannot be nil.
+	// If the value is not valid in reflection terms, it cannot be nil.
 	if !v.IsValid() {
 		return false
 	}
 
-	// Use reflection to check if the value is nil for reference types only.
-	// Non-reference types (e.g., int, float, struct) cannot be nil.
+	// Check if the value is nil for reference types.
+	// Non-reference types cannot be nil at all.
 	switch v.Kind() {
 	case reflect.Chan, // Channels
 		reflect.Func,      // Functions
@@ -47,10 +48,10 @@ func IsNil(value any) bool {
 		reflect.Map,       // Maps
 		reflect.Ptr,       // Pointers
 		reflect.Slice:     // Slices
-		// For reference types, use IsNil() to check nil value.
+		// Use IsNil to check if the reflected value is nil.
 		return v.IsNil()
 	default:
-		// Non-reference types cannot be nil, return false.
+		// For non-reference types, return false as they cannot be nil.
 		return false
 	}
 }
