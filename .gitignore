@@ -22,7 +22,6 @@ go.work
 go.work.sum
 
 /bin/
-/pkg/
 
 /.idea/
 /.idea/.gitignore
